@@ -94,9 +94,12 @@ public class MainApplicationFrame extends JFrame
 // 
 //        return menuBar;
 //    }
-    
-    private JMenuBar generateMenuBar()
-    {
+
+    private void closeDialog() {
+
+    }
+
+    private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
@@ -135,8 +138,18 @@ public class MainApplicationFrame extends JFrame
             testMenu.add(addLogMessageItem);
         }
 
+        JMenu otherMenu = new JMenu("Остальное");
+        {
+            JMenuItem addLogMessageItem = new JMenuItem("Закрыть программу", KeyEvent.VK_S);
+            addLogMessageItem.addActionListener((event) -> {
+                System.exit(0);
+            });
+            otherMenu.add(addLogMessageItem);
+        }
+
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        menuBar.add(otherMenu);
         return menuBar;
     }
     
