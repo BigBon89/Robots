@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JOptionPane;
 
 import log.Logger;
 
@@ -96,7 +97,23 @@ public class MainApplicationFrame extends JFrame
 //    }
 
     private void closeDialog() {
+        Object[] options = { "Да", "Нет" };
 
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Закрыть приложение?",
+                "Вопрос",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+
+            System.exit(0);
+        }
     }
 
     private JMenuBar generateMenuBar() {
@@ -142,7 +159,7 @@ public class MainApplicationFrame extends JFrame
         {
             JMenuItem addLogMessageItem = new JMenuItem("Закрыть программу", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
-                System.exit(0);
+                closeDialog();
             });
             otherMenu.add(addLogMessageItem);
         }
