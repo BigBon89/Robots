@@ -23,8 +23,7 @@ import log.Logger;
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  *
  */
-public class MainApplicationFrame extends JFrame
-{
+public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
@@ -33,11 +32,11 @@ public class MainApplicationFrame extends JFrame
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
-                screenSize.width  - inset*2,
-                screenSize.height - inset*2);
+                screenSize.width  - inset * 2,
+                screenSize.height - inset * 2
+        );
 
         setContentPane(desktopPane);
-
 
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
@@ -50,8 +49,7 @@ public class MainApplicationFrame extends JFrame
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    protected LogWindow createLogWindow()
-    {
+    protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
@@ -61,8 +59,7 @@ public class MainApplicationFrame extends JFrame
         return logWindow;
     }
 
-    protected void addWindow(JInternalFrame frame)
-    {
+    protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
@@ -96,7 +93,7 @@ public class MainApplicationFrame extends JFrame
 //        return menuBar;
 //    }
 
-    private void closeDialog() {
+    private void dialogCloseProgram() {
         Object[] options = { "Да", "Нет" };
 
         int choice = JOptionPane.showOptionDialog(
@@ -111,7 +108,6 @@ public class MainApplicationFrame extends JFrame
         );
 
         if (choice == JOptionPane.YES_OPTION) {
-
             System.exit(0);
         }
     }
@@ -159,7 +155,7 @@ public class MainApplicationFrame extends JFrame
         {
             JMenuItem addLogMessageItem = new JMenuItem("Закрыть программу", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
-                closeDialog();
+                dialogCloseProgram();
             });
             otherMenu.add(addLogMessageItem);
         }
@@ -170,10 +166,8 @@ public class MainApplicationFrame extends JFrame
         return menuBar;
     }
 
-    private void setLookAndFeel(String className)
-    {
-        try
-        {
+    private void setLookAndFeel(String className) {
+        try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
         }
