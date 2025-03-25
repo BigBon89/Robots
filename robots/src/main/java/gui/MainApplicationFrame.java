@@ -146,30 +146,42 @@ public class MainApplicationFrame extends JFrame {
         return addLogMessageItem;
     }
 
-    private JMenuBar generateMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-
+    private JMenu createLookAndFeelMenu() {
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
                 "Управление режимом отображения приложения");
-
         lookAndFeelMenu.add(createSystemLookAndFeel());
-
         lookAndFeelMenu.add(createCrossPlatformLookAndFeel());
+        return lookAndFeelMenu;
+    }
 
+    private JMenu createTestMenu() {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
                 "Тестовые команды");
         testMenu.add(createAddLogMessageItem());
+        return testMenu;
+    }
 
+    private JMenu createOtherMenu() {
         JMenu otherMenu = new JMenu("Остальное");
         otherMenu.add(createAddCloseDialogItem());
+        return otherMenu;
+    }
+
+    private JMenuBar generateMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu lookAndFeelMenu = createLookAndFeelMenu();
+        JMenu testMenu = createTestMenu();
+        JMenu otherMenu = createOtherMenu();
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         menuBar.add(otherMenu);
+
         return menuBar;
     }
 
