@@ -17,8 +17,13 @@ import javax.swing.JOptionPane;
 
 import log.Logger;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.prefs.Preferences;
+
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -41,6 +46,37 @@ public class MainApplicationFrame extends JFrame {
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveWindowsState();
+            }
+        });
+
+        restoreWindowsState();
+    }
+
+    private void saveWindowsState() {
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            String title = frame.getTitle();
+            prefs.putInt(title + "_x", frame.getX());
+            prefs.putInt(title + "_y", frame.getY());
+            prefs.putInt(title + "_width", frame.getWidth());
+            prefs.putInt(title + "_height", frame.getHeight());
+        }
+    }
+
+    private void restoreWindowsState() {
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            String title = frame.getTitle();
+            int x = prefs.getInt(title + "_x", frame.getX());
+            int y = prefs.getInt(title + "_y", frame.getY());
+            int width = prefs.getInt(title + "_width", frame.getWidth());
+            int height = prefs.getInt(title + "_height", frame.getHeight());
+
+            frame.setBounds(x, y, width, height);
+        }
     }
 
     protected LogWindow createLogWindow() {
