@@ -36,6 +36,7 @@ public class MainApplicationFrame extends JFrame {
         );
 
         setContentPane(desktopPane);
+        WindowSaver windowSaver = new WindowSaver(desktopPane);
 
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
@@ -50,33 +51,11 @@ public class MainApplicationFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                saveWindowsState();
+                windowSaver.saveWindows();
             }
         });
 
-        restoreWindowsState();
-    }
-
-    private void saveWindowsState() {
-        for (JInternalFrame frame : desktopPane.getAllFrames()) {
-            String title = frame.getTitle();
-            prefs.putInt(title + "_x", frame.getX());
-            prefs.putInt(title + "_y", frame.getY());
-            prefs.putInt(title + "_width", frame.getWidth());
-            prefs.putInt(title + "_height", frame.getHeight());
-        }
-    }
-
-    private void restoreWindowsState() {
-        for (JInternalFrame frame : desktopPane.getAllFrames()) {
-            String title = frame.getTitle();
-            int x = prefs.getInt(title + "_x", frame.getX());
-            int y = prefs.getInt(title + "_y", frame.getY());
-            int width = prefs.getInt(title + "_width", frame.getWidth());
-            int height = prefs.getInt(title + "_height", frame.getHeight());
-
-            frame.setBounds(x, y, width, height);
-        }
+        windowSaver.restoreWindows();
     }
 
     protected LogWindow createLogWindow() {
