@@ -19,6 +19,7 @@ public class WindowSaver {
             prefs.putInt(title + "_y", frame.getY());
             prefs.putInt(title + "_width", frame.getWidth());
             prefs.putInt(title + "_height", frame.getHeight());
+            prefs.putBoolean(title + "_minimized", frame.isIcon());
         }
     }
 
@@ -29,8 +30,14 @@ public class WindowSaver {
             int y = prefs.getInt(title + "_y", frame.getY());
             int width = prefs.getInt(title + "_width", frame.getWidth());
             int height = prefs.getInt(title + "_height", frame.getHeight());
+            boolean isMinimized = prefs.getBoolean(title + "_minimized", false);
 
             frame.setBounds(x, y, width, height);
+            try {
+                frame.setIcon(isMinimized);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
