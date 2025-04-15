@@ -1,5 +1,7 @@
 package gui;
 
+import log.Logger;
+
 import javax.swing.*;
 
 public class WindowSaver {
@@ -37,7 +39,7 @@ public class WindowSaver {
             try {
                 frame.setIcon(settings.minimized);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.debug("Не удалось свернуть окно '" + frame.getTitle() + "': " + e.getMessage());
             }
         }
     }
