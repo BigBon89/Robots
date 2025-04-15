@@ -19,11 +19,9 @@ import log.Logger;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.prefs.Preferences;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
