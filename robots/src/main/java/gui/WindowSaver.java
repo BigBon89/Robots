@@ -1,40 +1,41 @@
 package gui;
 
 import javax.swing.*;
-import java.util.prefs.Preferences;
 
 public class WindowSaver {
-    private final Preferences prefs;
     private final JDesktopPane desktopPane;
+    private final WindowSettingsStorage storage;
 
     public WindowSaver(JDesktopPane pane) {
-        prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
-        desktopPane = pane;
+        this.desktopPane = pane;
+        this.storage = new WindowSettingsStorage(MainApplicationFrame.class);
     }
 
     public void saveWindows() {
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             String title = frame.getTitle();
-            prefs.putInt(title + "_x", frame.getX());
-            prefs.putInt(title + "_y", frame.getY());
-            prefs.putInt(title + "_width", frame.getWidth());
-            prefs.putInt(title + "_height", frame.getHeight());
-            prefs.putBoolean(title + "_minimized", frame.isIcon());
+            WindowSettings settings = new WindowSettings(
+                    frame.getX(), frame.getY(),
+                    frame.getWidth(), frame.getHeight(),
+                    frame.isIcon()
+            );
+            storage.save(title, settings);
         }
     }
 
     public void restoreWindows() {
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             String title = frame.getTitle();
-            int x = prefs.getInt(title + "_x", frame.getX());
-            int y = prefs.getInt(title + "_y", frame.getY());
-            int width = prefs.getInt(title + "_width", frame.getWidth());
-            int height = prefs.getInt(title + "_height", frame.getHeight());
-            boolean isMinimized = prefs.getBoolean(title + "_minimized", false);
+            WindowSettings defaults = new WindowSettings(
+                    frame.getX(), frame.getY(),
+                    frame.getWidth(), frame.getHeight(),
+                    false
+            );
+            WindowSettings settings = storage.load(title, defaults);
 
-            frame.setBounds(x, y, width, height);
+            frame.setBounds(settings.x, settings.y, settings.width, settings.height);
             try {
-                frame.setIcon(isMinimized);
+                frame.setIcon(settings.minimized);
             } catch (Exception e) {
                 e.printStackTrace();
             }
