@@ -72,17 +72,12 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void dialogCloseProgram() {
-        Object[] options = { "Да", "Нет" };
-
-        int choice = JOptionPane.showOptionDialog(
+        int choice = JOptionPane.showConfirmDialog(
                 null,
                 "Закрыть приложение?",
                 "Вопрос",
                 JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]
+                JOptionPane.QUESTION_MESSAGE
         );
 
         if (choice == JOptionPane.YES_OPTION) {
