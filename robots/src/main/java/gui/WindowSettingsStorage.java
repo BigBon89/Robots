@@ -1,5 +1,6 @@
 package gui;
 
+import java.lang.reflect.Field;
 import java.util.prefs.Preferences;
 
 public class WindowSettingsStorage {
@@ -10,19 +11,49 @@ public class WindowSettingsStorage {
     }
 
     public void save(String title, WindowSettings settings) {
-        prefs.putInt(title + "_x", settings.x);
-        prefs.putInt(title + "_y", settings.y);
-        prefs.putInt(title + "_width", settings.width);
-        prefs.putInt(title + "_height", settings.height);
-        prefs.putBoolean(title + "_minimized", settings.minimized);
+        for (Field field : WindowSettings.class.getDeclaredFields()) {
+            if (field.isAnnotationPresent(WindowProperty.class)) {
+                field.setAccessible(true);
+                WindowProperty prop = field.getAnnotation(WindowProperty.class);
+                String key = title + "_" + prop.key();
+                try {
+                    Object value = field.get(settings);
+                    if (field.getType() == int.class) {
+                        prefs.putInt(key, (int) value);
+                    } else if (field.getType() == boolean.class) {
+                        prefs.putBoolean(key, (boolean) value);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public WindowSettings load(String title, WindowSettings defaults) {
-        int x = prefs.getInt(title + "_x", defaults.x);
-        int y = prefs.getInt(title + "_y", defaults.y);
-        int width = prefs.getInt(title + "_width", defaults.width);
-        int height = prefs.getInt(title + "_height", defaults.height);
-        boolean minimized = prefs.getBoolean(title + "_minimized", defaults.minimized);
-        return new WindowSettings(x, y, width, height, minimized);
+        WindowSettings settings = new WindowSettings(
+                defaults.x, defaults.y, defaults.width, defaults.height, defaults.minimized
+        );
+
+        for (Field field : WindowSettings.class.getDeclaredFields()) {
+            if (field.isAnnotationPresent(WindowProperty.class)) {
+                field.setAccessible(true);
+                WindowProperty prop = field.getAnnotation(WindowProperty.class);
+                String key = title + "_" + prop.key();
+                try {
+                    if (field.getType() == int.class) {
+                        int value = prefs.getInt(key, (int) field.get(defaults));
+                        field.set(settings, value);
+                    } else if (field.getType() == boolean.class) {
+                        boolean value = prefs.getBoolean(key, (boolean) field.get(defaults));
+                        field.set(settings, value);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return settings;
     }
 }

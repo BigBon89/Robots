@@ -1,7 +1,19 @@
 package gui;
 
 public class WindowSettings {
-    public int x, y, width, height;
+    @WindowProperty(key = "x")
+    public int x;
+
+    @WindowProperty(key = "y")
+    public int y;
+
+    @WindowProperty(key = "width")
+    public int width;
+
+    @WindowProperty(key = "height")
+    public int height;
+
+    @WindowProperty(key = "minimized")
     public boolean minimized;
 
     public WindowSettings(int x, int y, int width, int height, boolean minimized) {
