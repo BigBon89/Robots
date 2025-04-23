@@ -1,6 +1,6 @@
 package gui;
 
-public class WindowSettings {
+public class WindowSettings implements Cloneable {
     public int x, y, width, height;
     public boolean minimized;
 
