@@ -32,7 +32,9 @@ public class WindowSaver {
 
     public void restoreWindows() {
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
-            if (!isSavable(frame)) continue;
+            if (!isSavable(frame)) {
+                continue;
+            }
 
             String title = frame.getTitle();
             WindowSettings defaults = new WindowSettings(

@@ -11,4 +11,13 @@ public class WindowSettings {
         this.height = height;
         this.minimized = minimized;
     }
+
+    @Override
+    public WindowSettings clone() {
+        try {
+            return (WindowSettings) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

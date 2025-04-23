@@ -1,5 +1,7 @@
 package gui;
 
+import log.Logger;
+
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
@@ -17,7 +19,7 @@ public class RobotsProgram {
 //        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger.debug(e.getMessage());
       }
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame();

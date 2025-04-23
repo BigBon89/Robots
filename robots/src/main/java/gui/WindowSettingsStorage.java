@@ -31,8 +31,7 @@ public class WindowSettingsStorage {
     }
 
     public WindowSettings load(String title, WindowSettings defaults) {
-        WindowSettings result = new WindowSettings(
-                defaults.x, defaults.y, defaults.width, defaults.height, defaults.minimized);
+        WindowSettings result = defaults.clone();
 
         for (Field field : WindowSettings.class.getFields()) {
             try {
