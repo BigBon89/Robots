@@ -21,6 +21,9 @@ public class PongGame extends JPanel {
     private final int m_platformWidth = 20;
     private final int m_platformHeight = 50;
 
+    private final int m_textScoresPositionX = 60;
+    private final int m_textScoresPositionY = 18;
+
     private volatile int m_points = 0;
 
     public PongGame() {
@@ -102,12 +105,17 @@ public class PongGame extends JPanel {
         fillRect(g, x, y, width, height);
     }
 
+    private void drawTextScores(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.drawString("Scores: " + Integer.toString(m_points), getWidth() - m_textScoresPositionX, m_textScoresPositionY);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
         drawBall(g2d, m_ballPositionX, m_ballPositionY, m_ballPositionDiam);
         drawPlatform(g2d, m_platformPositionX, m_platformPositionY, m_platformWidth, m_platformHeight);
-        g2d.drawString("Scores: " + Integer.toString(m_points), getWidth() - 60, 18); // TODO: перенести в правый верхний угол
+        drawTextScores(g2d);
     }
 }
