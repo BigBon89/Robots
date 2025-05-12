@@ -21,6 +21,8 @@ public class PongGame extends JPanel {
     private final int m_platformWidth = 20;
     private final int m_platformHeight = 50;
 
+    private volatile int m_points = 0;
+
     public PongGame() {
         m_timer = new Timer("events generator", true);
         m_timer.schedule(new TimerTask() {
@@ -71,6 +73,8 @@ public class PongGame extends JPanel {
         ) {
             int newVelocityX = -m_ballVelocityX;
             m_ballVelocityX = newVelocityX;
+            int newPoints = m_points + 1;
+            m_points = newPoints; // TODO: отделить оскок от стен и от платформы
         }
         if (newY >= getHeight() || newY <= 0) {
             int newVelocityY = -m_ballVelocityY;
@@ -104,5 +108,6 @@ public class PongGame extends JPanel {
         Graphics2D g2d = (Graphics2D)g;
         drawBall(g2d, m_ballPositionX, m_ballPositionY, m_ballPositionDiam);
         drawPlatform(g2d, m_platformPositionX, m_platformPositionY, m_platformWidth, m_platformHeight);
+        g2d.drawString("Scores: " + Integer.toString(m_points), getWidth() - 60, 18); // TODO: перенести в правый верхний угол
     }
 }
