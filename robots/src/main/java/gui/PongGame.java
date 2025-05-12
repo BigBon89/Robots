@@ -13,6 +13,9 @@ public class PongGame extends JPanel {
     private volatile int m_ballPositionX = 50;
     private volatile int m_ballPositionY = 50;
     private final int m_ballPositionDiam = 20;
+    private volatile int m_ballVelocityX = 1;
+    private volatile int m_ballVelocityY = 1;
+
     private final int m_platformPositionX = 50;
     private volatile int m_platformPositionY = 20;
     private final int m_platformWidth = 20;
@@ -51,8 +54,21 @@ public class PongGame extends JPanel {
     }
 
     protected void onModelUpdateEvent() {
-        int newX = m_ballPositionX + 1;
-        int newY = m_ballPositionY + 1;
+        int windowWidth = getWidth();
+        int windowHeight = getHeight();
+        if (windowWidth <= 0 || windowHeight <= 0) {
+            return;
+        }
+        int newX = m_ballPositionX + m_ballVelocityX;
+        int newY = m_ballPositionY + m_ballVelocityY;
+        if (newX >= getWidth() || newX <= 0) {
+            int newVelocityX = -m_ballVelocityX;
+            m_ballVelocityX = newVelocityX;
+        }
+        if (newY >= getHeight() || newY <= 0) {
+            int newVelocityY = -m_ballVelocityY;
+            m_ballVelocityY = newVelocityY;
+        }
         m_ballPositionX = newX;
         m_ballPositionY = newY;
     }
