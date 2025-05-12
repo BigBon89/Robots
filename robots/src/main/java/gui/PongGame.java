@@ -10,7 +10,7 @@ import java.util.TimerTask;
 public class PongGame extends JPanel {
     private final java.util.Timer m_timer;
 
-    private volatile int m_ballPositionX = 50;
+    private volatile int m_ballPositionX = 100;
     private volatile int m_ballPositionY = 50;
     private final int m_ballPositionDiam = 20;
     private volatile int m_ballVelocityX = 1;
@@ -61,7 +61,14 @@ public class PongGame extends JPanel {
         }
         int newX = m_ballPositionX + m_ballVelocityX;
         int newY = m_ballPositionY + m_ballVelocityY;
-        if (newX >= getWidth() || newX <= 0) {
+        if (newX >= getWidth()
+                || newX <= 0
+                || (
+                        newY <= m_platformPositionY + m_platformHeight / 2
+                        && newY >= m_platformPositionY - m_platformHeight / 2
+                        && newX <= m_platformPositionX + m_platformWidth / 2
+                )
+        ) {
             int newVelocityX = -m_ballVelocityX;
             m_ballVelocityX = newVelocityX;
         }
