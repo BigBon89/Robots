@@ -10,36 +10,31 @@ import java.util.TimerTask;
 public class PongGame extends JPanel {
     private final java.util.Timer m_timer;
 
-    private volatile int m_ballPositionX = 100;
-    private volatile int m_ballPositionY = 50;
-    private final int m_ballPositionDiam = 20;
-    private volatile int m_ballVelocityX = 1;
-    private volatile int m_ballVelocityY = 1;
+    private int m_ballPositionX = 100;
+    private int m_ballPositionY = 100;
+    private final int m_ballDiam = 20;
+    private int m_ballVelocityX = 2;
+    private int m_ballVelocityY = 2;
 
     private final int m_platformPositionX = 50;
-    private volatile int m_platformPositionY = 20;
+    private int m_platformPositionY = 20;
     private final int m_platformWidth = 20;
     private final int m_platformHeight = 50;
 
     private final int m_textScoresPositionX = 60;
     private final int m_textScoresPositionY = 18;
 
-    private volatile int m_points = 0;
+    private int m_points = 0;
 
     public PongGame() {
         m_timer = new Timer("events generator", true);
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                onModelUpdateEvent();
                 onRedrawEvent();
             }
-        }, 0, 50);
-        m_timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                onModelUpdateEvent();
-            }
-        }, 0, 10);
+        }, 0, 15);
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -64,25 +59,36 @@ public class PongGame extends JPanel {
         if (windowWidth <= 0 || windowHeight <= 0) {
             return;
         }
+
+        int radius = m_ballDiam / 2;
         int newX = m_ballPositionX + m_ballVelocityX;
         int newY = m_ballPositionY + m_ballVelocityY;
-        if (newX >= getWidth()
-                || newX <= 0
-                || (
-                        newY <= m_platformPositionY + m_platformHeight / 2
-                        && newY >= m_platformPositionY - m_platformHeight / 2
-                        && newX <= m_platformPositionX + m_platformWidth / 2
-                )
-        ) {
-            int newVelocityX = -m_ballVelocityX;
-            m_ballVelocityX = newVelocityX;
-            int newPoints = m_points + 1;
-            m_points = newPoints; // TODO: отделить оскок от стен и от платформы
+
+        if (newX + radius >= windowWidth || newX - radius <= 0) {
+            m_ballVelocityX = -m_ballVelocityX;
         }
-        if (newY >= getHeight() || newY <= 0) {
-            int newVelocityY = -m_ballVelocityY;
-            m_ballVelocityY = newVelocityY;
+
+        if (newY + radius >= windowHeight || newY - radius <= 0) {
+            m_ballVelocityY = -m_ballVelocityY;
         }
+
+        boolean inPlatformX = newX <= m_platformPositionX + m_platformWidth / 2 &&
+                newX >= m_platformPositionX - m_platformWidth / 2;
+        boolean inPlatformY = newY >= m_platformPositionY - m_platformHeight / 2 &&
+                newY <= m_platformPositionY + m_platformHeight / 2;
+
+        if (inPlatformX && inPlatformY && m_ballVelocityX < 0) {
+            m_points++;
+            m_ballVelocityX = 2 + (int)(Math.random() * 4);
+            m_ballVelocityY = Integer.signum(m_ballVelocityY) * (2 + (int)(Math.random() * 4));
+        }
+
+        if (newX < m_platformPositionX - m_platformWidth / 2 && !inPlatformY) {
+            m_points = 0;
+            resetBall();
+            return;
+        }
+
         m_ballPositionX = newX;
         m_ballPositionY = newY;
     }
@@ -110,11 +116,18 @@ public class PongGame extends JPanel {
         g.drawString("Scores: " + Integer.toString(m_points), getWidth() - m_textScoresPositionX, m_textScoresPositionY);
     }
 
+    private void resetBall() {
+        m_ballPositionX = 100;
+        m_ballPositionY = 100;
+        m_ballVelocityX = 2;
+        m_ballVelocityY = 2;
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
-        drawBall(g2d, m_ballPositionX, m_ballPositionY, m_ballPositionDiam);
+        drawBall(g2d, m_ballPositionX, m_ballPositionY, m_ballDiam);
         drawPlatform(g2d, m_platformPositionX, m_platformPositionY, m_platformWidth, m_platformHeight);
         drawTextScores(g2d);
     }
