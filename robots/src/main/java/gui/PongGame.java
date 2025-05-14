@@ -72,10 +72,10 @@ public class PongGame extends JPanel {
             m_ballVelocityY = -m_ballVelocityY;
         }
 
-        boolean inPlatformX = newX <= m_platformPositionX + m_platformWidth / 2 &&
-                newX >= m_platformPositionX - m_platformWidth / 2;
-        boolean inPlatformY = newY >= m_platformPositionY - m_platformHeight / 2 &&
-                newY <= m_platformPositionY + m_platformHeight / 2;
+        boolean inPlatformX = newX - m_ballDiam / 2 <= m_platformPositionX + m_platformWidth / 2 &&
+                newX + m_ballDiam / 2  >= m_platformPositionX - m_platformWidth / 2;
+        boolean inPlatformY = newY + m_ballDiam / 2 >= m_platformPositionY - m_platformHeight / 2 &&
+                newY - m_ballDiam / 2 <= m_platformPositionY + m_platformHeight / 2;
 
         if (inPlatformX && inPlatformY && m_ballVelocityX < 0) {
             m_points++;
