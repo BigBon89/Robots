@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,7 +14,6 @@ import static java.awt.event.KeyEvent.*;
 public class PongGame extends JPanel {
     private final java.util.Timer m_timer;
 
-    private final int m_textScoresPositionX = 60;
     private final int m_textScoresPositionY = 18;
 
     private int points1 = 0;
@@ -26,7 +27,7 @@ public class PongGame extends JPanel {
     private final CollisionSystem collisionSystem;
 
     private boolean init;
-
+    private final Set<Integer> keysPressed = new HashSet<>();
     public PongGame() {
         collisionSystem = CollisionSystem.getInstance();
         init = false;
@@ -44,19 +45,12 @@ public class PongGame extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == VK_W) {
-                    platform1.move(-10);
-                }
-                if (e.getKeyCode() == VK_S) {
-                    platform1.move(10);
-                }
-                if (e.getKeyCode() == VK_UP) {
-                    platform2.move(-10);
-                }
-                if (e.getKeyCode() == VK_DOWN) {
-                    platform2.move(10);
-                }
-                repaint();
+                keysPressed.add(e.getKeyCode());
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                keysPressed.remove(e.getKeyCode());
             }
         });
         setDoubleBuffered(true);
@@ -88,6 +82,19 @@ public class PongGame extends JPanel {
             init = true;
         }
 
+        if (keysPressed.contains(KeyEvent.VK_W)) {
+            platform1.move(-5);
+        }
+        if (keysPressed.contains(KeyEvent.VK_S)) {
+            platform1.move(5);
+        }
+        if (keysPressed.contains(KeyEvent.VK_UP)) {
+            platform2.move(-5);
+        }
+        if (keysPressed.contains(KeyEvent.VK_DOWN)) {
+            platform2.move(5);
+        }
+
         collisionSystem.screenHeight = windowHeight;
 
         Collidable collisionObject = ball.move();
@@ -108,7 +115,7 @@ public class PongGame extends JPanel {
     private void drawTextScores(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.drawString("Scores Player1: " + Integer.toString(points1), getWidth() / 2, m_textScoresPositionY);
-        g.drawString("Scores Player2: " + Integer.toString(points2), getWidth() / 2, m_textScoresPositionY + 20);
+        g.drawString("Scores Player2: " + Integer.toString(points2), getWidth() / 2, m_textScoresPositionY * 2);
     }
 
     @Override
