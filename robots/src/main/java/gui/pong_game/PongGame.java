@@ -1,4 +1,4 @@
-package gui;
+package gui.pong_game;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +18,10 @@ public class PongGame extends JPanel {
     private int m_ballVelocityX = 2;
     private int m_ballVelocityY = 2;
 
-    private final int m_platformPositionX = 50;
-    private int m_platformPositionY = 20;
+    private final int m_platformPlayer1PositionX = 50;
+    private int m_platformPlayer1PositionY = 50;
+    private final int m_platformPlayer2PositionX = 150;
+    private int m_platformPlayer2PositionY = 50;
     private final int m_platformWidth = 20;
     private final int m_platformHeight = 50;
 
@@ -28,7 +30,13 @@ public class PongGame extends JPanel {
 
     private int m_points = 0;
 
+    private Platform platform1;
+    private Platform platform2;
+
     public PongGame() {
+        platform1 = new Platform(50, 50, 20, 50);
+        platform2 = new Platform(150, 50, 20, 50);
+
         this.setFocusable(true);
 
         m_timer = new Timer("events generator", true);
@@ -48,6 +56,12 @@ public class PongGame extends JPanel {
                 if (e.getKeyCode() == VK_S) {
                     changePlatformPosition(10);
                 }
+                if (e.getKeyCode() == VK_UP) {
+                    platform2.move(-10);
+                }
+                if (e.getKeyCode() == VK_DOWN) {
+                    platform2.move(10);
+                }
                 repaint();
             }
         });
@@ -59,7 +73,7 @@ public class PongGame extends JPanel {
     }
 
     protected void changePlatformPosition(int number) {
-        m_platformPositionY += number;
+        m_platformPlayer1PositionY += number;
     }
 
     protected void onModelUpdateEvent() {
@@ -81,10 +95,10 @@ public class PongGame extends JPanel {
             m_ballVelocityY = -m_ballVelocityY;
         }
 
-        boolean inPlatformX = newX - m_ballDiam / 2 <= m_platformPositionX + m_platformWidth / 2 &&
-                newX + m_ballDiam / 2  >= m_platformPositionX - m_platformWidth / 2;
-        boolean inPlatformY = newY + m_ballDiam / 2 >= m_platformPositionY - m_platformHeight / 2 &&
-                newY - m_ballDiam / 2 <= m_platformPositionY + m_platformHeight / 2;
+        boolean inPlatformX = newX - m_ballDiam / 2 <= m_platformPlayer1PositionX + m_platformWidth / 2 &&
+                newX + m_ballDiam / 2  >= m_platformPlayer1PositionX - m_platformWidth / 2;
+        boolean inPlatformY = newY + m_ballDiam / 2 >= m_platformPlayer1PositionY - m_platformHeight / 2 &&
+                newY - m_ballDiam / 2 <= m_platformPlayer1PositionY + m_platformHeight / 2;
 
         if (inPlatformX && inPlatformY && m_ballVelocityX < 0) {
             m_points++;
@@ -92,7 +106,7 @@ public class PongGame extends JPanel {
             m_ballVelocityY = Integer.signum(m_ballVelocityY) * (2 + (int)(Math.random() * 4));
         }
 
-        if (newX < m_platformPositionX - m_platformWidth / 2 && !inPlatformY) {
+        if (newX < m_platformPlayer1PositionX - m_platformWidth / 2 && !inPlatformY) {
             m_points = 0;
             resetBall();
             return;
@@ -111,13 +125,18 @@ public class PongGame extends JPanel {
     }
 
     private void drawBall(Graphics2D g, int x, int y, int diam) {
-        g.setColor(Color.RED);
+        g.setColor(Color.WHITE);
         fillCircle(g, x, y, diam);
     }
 
     private void drawPlatform(Graphics2D g, int x, int y, int width, int height) {
-        g.setColor(Color.BLUE);
+        g.setColor(Color.WHITE);
         fillRect(g, x, y, width, height);
+    }
+
+    private void drawBackground(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
 
     private void drawTextScores(Graphics2D g) {
@@ -136,8 +155,12 @@ public class PongGame extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
+
+        drawBackground(g2d);
         drawBall(g2d, m_ballPositionX, m_ballPositionY, m_ballDiam);
-        drawPlatform(g2d, m_platformPositionX, m_platformPositionY, m_platformWidth, m_platformHeight);
+        drawPlatform(g2d, m_platformPlayer1PositionX, m_platformPlayer1PositionY, m_platformWidth, m_platformHeight);
         drawTextScores(g2d);
+
+        platform2.draw(g2d);
     }
 }

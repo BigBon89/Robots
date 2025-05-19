@@ -1,5 +1,7 @@
 package gui;
 
+import gui.pong_game.PongGame;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JInternalFrame;
