@@ -3,10 +3,10 @@ package gui.pong_game;
 import java.awt.*;
 
 public class Ball implements Collidable {
-    public int positionX, positionY;
-    public int diam;
-    public int velocityX = 2;
-    public int velocityY = 1;
+    private int positionX, positionY;
+    private int diam;
+    private int velocityX = 2;
+    private int velocityY = 1;
 
     public Ball(int positionX, int positionY, int diam) {
         this.positionX = positionX;
@@ -14,28 +14,34 @@ public class Ball implements Collidable {
         this.diam = diam;
     }
 
-    @Override
-    public Rect getBounds() {
-        return new Rect(positionX - diam / 2, positionY - diam / 2, diam, diam);
+    public void setPosition(int positionX, int positionY) {
+        this.positionX = positionX;
+        this.positionY = positionY;
     }
 
-    void move() {
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(positionX - diam / 2, positionY - diam / 2, diam, diam);
+    }
+
+    Collidable move() {
         CollisionSystem collisionSystem = CollisionSystem.getInstance();
 
-        int newX = positionX + velocityX;
-        int newY = positionY + velocityY;
-        positionX = newX;
-        positionY = newY;
+        positionX += velocityX;
+        positionY += velocityY;
 
-        Collidable obj = collisionSystem.getCollisionObject(this);
-        if (obj == null) {
-            return;
+        Collidable collisionObject = collisionSystem.getCollisionObject(this);
+        if (collisionObject == null) {
+            return null;
         }
-        if (obj instanceof Platform) {
+        positionX -= velocityX;
+        positionY -= velocityY;
+        if (collisionObject instanceof Platform) {
             velocityX *= -1;
         } else {
             velocityY *= -1;
         }
+        return collisionObject;
     }
 
     void draw(Graphics2D g) {

@@ -15,22 +15,21 @@ public class PongGame extends JPanel {
     private final int m_textScoresPositionX = 60;
     private final int m_textScoresPositionY = 18;
 
-    private int m_points = 0;
+    private int points1 = 0;
+    private int points2 = 0;
 
-    private final Platform platform1;
-    private final Platform platform2;
-    private final Ball ball;
+    private Platform platform1;
+    private Platform platform2;
+    private GameOverZone gameOverZone1;
+    private GameOverZone gameOverZone2;
+    private Ball ball;
     private final CollisionSystem collisionSystem;
+
+    private boolean init;
 
     public PongGame() {
         collisionSystem = CollisionSystem.getInstance();
-        platform1 = new Platform(50, 50, 20, 50);
-        platform2 = new Platform(350, 50, 20, 50);
-        ball = new Ball(100, 100, 20);
-
-        collisionSystem.add(platform1);
-        collisionSystem.add(platform2);
-        collisionSystem.add(ball);
+        init = false;
 
         this.setFocusable(true);
 
@@ -73,10 +72,32 @@ public class PongGame extends JPanel {
         if (windowWidth <= 0 || windowHeight <= 0) {
             return;
         }
-        collisionSystem.screenWidth = windowWidth;
+
+        if (!init) {
+            platform1 = new Platform(50, getHeight() / 2, 20, 50);
+            platform2 = new Platform(getWidth() - 50, getHeight() / 2, 20, 50);
+            gameOverZone1 = new GameOverZone(0, 0, 50, getHeight());
+            gameOverZone2 = new GameOverZone(getWidth() - 50, 0, 50, getHeight());
+            ball = new Ball(100, 100, 20);
+
+            collisionSystem.add(platform1);
+            collisionSystem.add(platform2);
+            collisionSystem.add(ball);
+            collisionSystem.add(gameOverZone1);
+            collisionSystem.add(gameOverZone2);
+            init = true;
+        }
+
         collisionSystem.screenHeight = windowHeight;
 
-        ball.move();
+        Collidable collisionObject = ball.move();
+        if (collisionObject == gameOverZone1) {
+            points2++;
+            ball.setPosition(getWidth() / 2, getHeight() / 2);
+        } else if (collisionObject == gameOverZone2) {
+            points1++;
+            ball.setPosition(getWidth() / 2, getHeight() / 2);
+        }
     }
 
     private void drawBackground(Graphics2D g) {
@@ -85,8 +106,9 @@ public class PongGame extends JPanel {
     }
 
     private void drawTextScores(Graphics2D g) {
-        g.setColor(Color.BLACK);
-        g.drawString("Scores: " + Integer.toString(m_points), getWidth() - m_textScoresPositionX, m_textScoresPositionY);
+        g.setColor(Color.WHITE);
+        g.drawString("Scores Player1: " + Integer.toString(points1), getWidth() / 2, m_textScoresPositionY);
+        g.drawString("Scores Player2: " + Integer.toString(points2), getWidth() / 2, m_textScoresPositionY + 20);
     }
 
     @Override
@@ -100,5 +122,7 @@ public class PongGame extends JPanel {
         platform1.draw(g2d);
         platform2.draw(g2d);
         ball.draw(g2d);
+        gameOverZone1.draw(g2d);
+        gameOverZone2.draw(g2d);
     }
 }

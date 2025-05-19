@@ -1,5 +1,6 @@
 package gui.pong_game;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,6 @@ public class CollisionSystem {
     private static final CollisionSystem instance = new CollisionSystem();
     private final List<Collidable> collidables = new ArrayList<>();
 
-    public int screenWidth;
     public int screenHeight;
 
     private CollisionSystem() {
@@ -22,19 +22,25 @@ public class CollisionSystem {
         collidables.add(c);
     }
 
-    public Collidable getCollisionObject(Collidable source) {
-        Rect bounds = source.getBounds();
+    public Collidable getCollisionObject(Collidable source, Class<?>... ignoreClasses) {
+        Rectangle bounds = source.getBounds();
 
-        if (bounds.x < 0 || bounds.y < 0 ||
-                bounds.x + bounds.width > screenWidth ||
-                bounds.y + bounds.height > screenHeight) {
-            return () -> new Rect(0, 0, 0, 0);
+        if (bounds.y < 0 || bounds.y + bounds.height > screenHeight) {
+            return () -> new Rectangle(0, 0, 0, 0);
         }
 
+        outer:
         for (Collidable other : collidables) {
             if (other == source) {
                 continue;
             }
+
+            for (Class<?> cls : ignoreClasses) {
+                if (cls.isInstance(other)) {
+                    continue outer;
+                }
+            }
+
             if (bounds.intersects(other.getBounds())) {
                 return other;
             }

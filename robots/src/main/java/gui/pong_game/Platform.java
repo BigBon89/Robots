@@ -14,14 +14,14 @@ public class Platform implements Collidable {
     }
 
     @Override
-    public Rect getBounds() {
-        return new Rect(positionX - width / 2, positionY - height / 2, width, height);
+    public Rectangle getBounds() {
+        return new Rectangle(positionX - width / 2, positionY - height / 2, width, height);
     }
 
     public void move(int additional) {
         CollisionSystem collisionSystem = CollisionSystem.getInstance();
         positionY += additional;
-        if (collisionSystem.getCollisionObject(this) != null) {
+        if (collisionSystem.getCollisionObject(this, GameOverZone.class) != null) {
             positionY -= additional;
         }
     }
