@@ -2,10 +2,12 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static java.awt.event.KeyEvent.*;
 
 public class PongGame extends JPanel {
     private final java.util.Timer m_timer;
@@ -27,6 +29,8 @@ public class PongGame extends JPanel {
     private int m_points = 0;
 
     public PongGame() {
+        this.setFocusable(true);
+
         m_timer = new Timer("events generator", true);
         m_timer.schedule(new TimerTask() {
             @Override
@@ -35,10 +39,15 @@ public class PongGame extends JPanel {
                 onRedrawEvent();
             }
         }, 0, 15);
-        addMouseMotionListener(new MouseAdapter() {
+        addKeyListener(new KeyAdapter() {
             @Override
-            public void mouseMoved(MouseEvent e) {
-                setPlatformPosition(e.getPoint());
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == VK_W) {
+                    changePlatformPosition(-10);
+                }
+                if (e.getKeyCode() == VK_S) {
+                    changePlatformPosition(10);
+                }
                 repaint();
             }
         });
@@ -49,8 +58,8 @@ public class PongGame extends JPanel {
         EventQueue.invokeLater(this::repaint);
     }
 
-    protected void setPlatformPosition(Point p) {
-        m_platformPositionY = p.y;
+    protected void changePlatformPosition(int number) {
+        m_platformPositionY += number;
     }
 
     protected void onModelUpdateEvent() {
