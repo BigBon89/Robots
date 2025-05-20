@@ -1,5 +1,6 @@
 package gui.pong_game;
 
+import java.util.Random;
 import java.awt.*;
 
 public class Ball implements Collidable {
@@ -48,10 +49,11 @@ public class Ball implements Collidable {
 
             double normalizedOffset = offset / (platform.getBounds().height / 2.0);
 
-            velocityY = (int)(normalizedOffset * 5);
+            Random random = new Random();
+            velocityY = (int)(normalizedOffset * 5 * (1.0f + random.nextFloat()));
 
             if (velocityY == 0) {
-                velocityY = 1;
+                velocityY = 2;
             }
 
             velocityX *= -1;

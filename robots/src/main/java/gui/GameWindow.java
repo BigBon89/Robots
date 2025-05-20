@@ -1,21 +1,35 @@
 package gui;
 
+import gui.pong_game.GameMode;
+import gui.pong_game.Menu;
 import gui.pong_game.PongGame;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 @SavableWindow
 public class GameWindow extends JInternalFrame {
-    private final PongGame m_visualizer;
+    private PongGame m_visualizer;
+
     public GameWindow() {
         super("Игровое поле", true, true, true, true);
-        m_visualizer = new PongGame();
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
-        getContentPane().add(panel);
+
+        Menu menu = new Menu();
+        getContentPane().add(menu);
         pack();
+
+        menu.setStartAction(e -> {
+            getContentPane().remove(menu);
+
+            GameMode selectedMode = menu.getSelectedGameMode();
+
+            m_visualizer = new PongGame(selectedMode);
+            JPanel gamePanel = new JPanel(new BorderLayout());
+            gamePanel.add(m_visualizer);
+            getContentPane().add(gamePanel);
+            revalidate();
+            m_visualizer.requestFocusInWindow();
+        });
     }
 }

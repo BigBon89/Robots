@@ -20,18 +20,19 @@ public class PongGame extends JPanel {
     private boolean init;
     private final Set<Integer> keysPressed = new HashSet<>();
 
-    private GameMode gameMode = GameMode.PLAYER_VS_AI_DIFFICULT_1;
+    private final GameMode gameMode;
     private final int textScoresPositionY = 18;
     private final int ballDiam = 20;
     private final int platformPositionX = 50;
     private final int platformWidth = 20;
     private final int platformHeight = 50;
 
-    public PongGame() {
+    public PongGame(GameMode gameMode) {
         collisionSystem = CollisionSystem.getInstance();
         gameOverZone1 = new GameOverZone();
         gameOverZone2 = new GameOverZone();
         init = false;
+        this.gameMode = gameMode;
 
         this.setFocusable(true);
 
@@ -149,10 +150,10 @@ public class PongGame extends JPanel {
         drawBackground(g2d);
         drawTextScores(g2d);
 
-        platform1.draw(g2d);
-        platform2.draw(g2d);
-        ball.draw(g2d);
-        gameOverZone1.draw(g2d);
-        gameOverZone2.draw(g2d);
+        if (platform1 != null) platform1.draw(g2d);
+        if (platform2 != null) platform2.draw(g2d);
+        if (ball != null) ball.draw(g2d);
+        if (gameOverZone1 != null) gameOverZone1.draw(g2d);
+        if (gameOverZone2 != null) gameOverZone2.draw(g2d);
     }
 }
