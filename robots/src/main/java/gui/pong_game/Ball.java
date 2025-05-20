@@ -4,9 +4,9 @@ import java.awt.*;
 
 public class Ball implements Collidable {
     private int positionX, positionY;
-    private int diam;
+    private final int diam;
     private int velocityX = 2;
-    private int velocityY = 1;
+    private int velocityY = 0;
 
     public Ball(int positionX, int positionY, int diam) {
         this.positionX = positionX;
@@ -17,6 +17,11 @@ public class Ball implements Collidable {
     public void setPosition(int positionX, int positionY) {
         this.positionX = positionX;
         this.positionY = positionY;
+    }
+
+    public void setVelocity(int velocityX, int velocityY) {
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
     }
 
     @Override
@@ -36,7 +41,19 @@ public class Ball implements Collidable {
         }
         positionX -= velocityX;
         positionY -= velocityY;
-        if (collisionObject instanceof Platform) {
+        if (collisionObject instanceof Platform platform) {
+            int platformCenterY = platform.getBounds().y + platform.getBounds().height / 2;
+            int ballCenterY = this.getBounds().y + this.getBounds().height / 2;
+            int offset = ballCenterY - platformCenterY;
+
+            double normalizedOffset = offset / (platform.getBounds().height / 2.0);
+
+            velocityY = (int)(normalizedOffset * 5);
+
+            if (velocityY == 0) {
+                velocityY = 1;
+            }
+
             velocityX *= -1;
         } else {
             velocityY *= -1;
