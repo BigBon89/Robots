@@ -18,6 +18,10 @@ public class Platform implements Collidable {
         return new Rectangle(positionX - width / 2, positionY - height / 2, width, height);
     }
 
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
     public void move(int additional) {
         CollisionSystem collisionSystem = CollisionSystem.getInstance();
         positionY += additional;

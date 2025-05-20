@@ -29,6 +29,8 @@ public class PongGame extends JPanel {
 
     public PongGame() {
         collisionSystem = CollisionSystem.getInstance();
+        gameOverZone1 = new GameOverZone();
+        gameOverZone2 = new GameOverZone();
         init = false;
 
         this.setFocusable(true);
@@ -69,8 +71,6 @@ public class PongGame extends JPanel {
         if (!init) {
             platform1 = new Platform(platformPositionX, getHeight() / 2, platformWidth, platformHeight);
             platform2 = new Platform(getWidth() - platformPositionX, getHeight() / 2, platformWidth, platformHeight);
-            gameOverZone1 = new GameOverZone(0, 0, platformPositionX, getHeight());
-            gameOverZone2 = new GameOverZone(getWidth() - platformPositionX, 0, platformPositionX, getHeight());
             ball = new Ball(getWidth() / 2, getHeight() / 2, ballDiam);
 
             collisionSystem.add(platform1);
@@ -80,6 +80,9 @@ public class PongGame extends JPanel {
             collisionSystem.add(gameOverZone2);
             init = true;
         }
+        gameOverZone1.resize(0, 0, platformPositionX, getHeight());
+        gameOverZone2.resize(getWidth() - platformPositionX, 0, platformPositionX, getHeight());
+        platform2.setPositionX(getWidth() - platformPositionX);
 
         if (keysPressed.contains(KeyEvent.VK_W)) {
             platform1.move(-5);
