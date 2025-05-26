@@ -2,7 +2,6 @@ package gui.pong_game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +12,8 @@ public class PongGame extends JPanel {
     private int points1 = 0, points2 = 0;
 
     private final CollisionSystem collisionSystem;
+    private final GameOverZone gameOverZone1, gameOverZone2;
     private Platform platform1, platform2;
-    private GameOverZone gameOverZone1, gameOverZone2;
     private Ball ball;
 
     private boolean init;
@@ -45,16 +44,26 @@ public class PongGame extends JPanel {
                 onRedrawEvent();
             }
         }, 0, 15);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
+        //TODO: проверить и убрать коммент
+//        addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                keysPressed.add(e.getKeyCode());
+//            }
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                keysPressed.remove(e.getKeyCode());
+//            }
+//        });
+        KeyboardFocusManager keyboardFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        keyboardFocusManager.addKeyEventDispatcher(e -> {
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
                 keysPressed.add(e.getKeyCode());
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
+            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
                 keysPressed.remove(e.getKeyCode());
             }
+            return false;
         });
         setDoubleBuffered(true);
     }
