@@ -1,8 +1,8 @@
 package gui.pong_game;
 
 public enum GameMode {
-    HOT_SEAT("Hot Seat", 2),
-    PLAYER_VS_AI_DIFFICULT_1("AI Легкий", 2, 2),
+    HOT_SEAT("Hot Seat", 3),
+    PLAYER_VS_AI_DIFFICULT_1("AI Легкий", 3, 3),
     PLAYER_VS_AI_DIFFICULT_2("AI Сложный", 5, 5);
 
     private final String displayName;
