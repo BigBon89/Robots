@@ -6,14 +6,18 @@ import java.awt.*;
 public class Ball implements Collidable {
     private int positionX, positionY;
     private final int diam;
-    private int velocityX = 2;
-    private int velocityY = 0;
+    private int velocityX;
+    private int velocityY;
+    private int defaultSpeed;
     private final Random random;
 
-    public Ball(int positionX, int positionY, int diam) {
+    public Ball(int positionX, int positionY, int diam, int defaultSpeed) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.diam = diam;
+        this.defaultSpeed = defaultSpeed;
+        velocityX = defaultSpeed;
+        velocityY = 0;
         random = new Random();
     }
 
@@ -25,6 +29,11 @@ public class Ball implements Collidable {
     public void setVelocity(int velocityX, int velocityY) {
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+    }
+
+    public void resetVelocity() {
+        velocityX = defaultSpeed;
+        velocityY = 0;
     }
 
     @Override

@@ -26,6 +26,7 @@ public class PongGame extends JPanel {
     private final int platformPositionX = 50;
     private final int platformWidth = 20;
     private final int platformHeight = 50;
+    private final int platformPlayerSpeed = 5;
 
     public PongGame(GameMode gameMode) {
         collisionSystem = CollisionSystem.getInstance();
@@ -72,7 +73,7 @@ public class PongGame extends JPanel {
         if (!init) {
             platform1 = new Platform(platformPositionX, getHeight() / 2, platformWidth, platformHeight);
             platform2 = new Platform(getWidth() - platformPositionX, getHeight() / 2, platformWidth, platformHeight);
-            ball = new Ball(getWidth() / 2, getHeight() / 2, ballDiam);
+            ball = new Ball(getWidth() / 2, getHeight() / 2, ballDiam, gameMode.getBallSpeed());
 
             collisionSystem.add(platform1);
             collisionSystem.add(platform2);
@@ -86,34 +87,27 @@ public class PongGame extends JPanel {
         platform2.setPositionX(getWidth() - platformPositionX);
 
         if (keysPressed.contains(KeyEvent.VK_W)) {
-            platform1.move(-5);
+            platform1.move(-platformPlayerSpeed);
         }
         if (keysPressed.contains(KeyEvent.VK_S)) {
-            platform1.move(5);
+            platform1.move(platformPlayerSpeed);
         }
         if (gameMode == GameMode.HOT_SEAT) {
             if (keysPressed.contains(KeyEvent.VK_UP)) {
-                platform2.move(-5);
+                platform2.move(-platformPlayerSpeed);
             }
             if (keysPressed.contains(KeyEvent.VK_DOWN)) {
-                platform2.move(5);
+                platform2.move(platformPlayerSpeed);
             }
         } else {
-            int aiSpeed = 0;
-
-            if (gameMode == GameMode.PLAYER_VS_AI_DIFFICULT_1) {
-                aiSpeed = 3;
-            } else if (gameMode == GameMode.PLAYER_VS_AI_DIFFICULT_2) {
-                aiSpeed = 5;
-            }
-
             int ballCenterY = ball.getBounds().y + ball.getBounds().width / 2;
             int platform2CenterY = platform2.getBounds().y + platform2.getBounds().height / 2;
 
-            if (platform2CenterY < ballCenterY - 5) {
-                platform2.move(aiSpeed);
-            } else if (platform2CenterY > ballCenterY + 5) {
-                platform2.move(-aiSpeed);
+            int deadZoneOffset = 5;
+            if (platform2CenterY < ballCenterY - deadZoneOffset) {
+                platform2.move(gameMode.getAiPlatformSpeed());
+            } else if (platform2CenterY > ballCenterY + deadZoneOffset) {
+                platform2.move(-gameMode.getAiPlatformSpeed());
             }
         }
 
@@ -123,11 +117,11 @@ public class PongGame extends JPanel {
         if (collisionObject == gameOverZone1) {
             points2++;
             ball.setPosition(getWidth() / 2, getHeight() / 2);
-            ball.setVelocity(2, 0);
+            ball.resetVelocity();
         } else if (collisionObject == gameOverZone2) {
             points1++;
             ball.setPosition(getWidth() / 2, getHeight() / 2);
-            ball.setVelocity(2, 0);
+            ball.resetVelocity();
         }
     }
 

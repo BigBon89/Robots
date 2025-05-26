@@ -1,14 +1,32 @@
 package gui.pong_game;
 
 public enum GameMode {
-    HOT_SEAT("Hot Seat"),
-    PLAYER_VS_AI_DIFFICULT_1("AI Легкий"),
-    PLAYER_VS_AI_DIFFICULT_2("AI Сложный");
+    HOT_SEAT("Hot Seat", 2),
+    PLAYER_VS_AI_DIFFICULT_1("AI Легкий", 2, 2),
+    PLAYER_VS_AI_DIFFICULT_2("AI Сложный", 5, 5);
 
     private final String displayName;
+    private final int ballSpeed;
+    private final int aiPlatformSpeed;
 
-    GameMode(String displayName) {
+    GameMode(String displayName, int ballSpeed) {
         this.displayName = displayName;
+        this.ballSpeed = ballSpeed;
+        this.aiPlatformSpeed = 0;
+    }
+
+    GameMode(String displayName, int ballSpeed, int aiPlatformSpeed) {
+        this.displayName = displayName;
+        this.ballSpeed = ballSpeed;
+        this.aiPlatformSpeed = aiPlatformSpeed;
+    }
+
+    public int getBallSpeed() {
+        return ballSpeed;
+    }
+
+    public int getAiPlatformSpeed() {
+        return aiPlatformSpeed;
     }
 
     @Override
