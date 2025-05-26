@@ -26,11 +26,6 @@ public class Ball implements Collidable {
         this.positionY = positionY;
     }
 
-    public void setVelocity(int velocityX, int velocityY) {
-        this.velocityX = velocityX;
-        this.velocityY = velocityY;
-    }
-
     public void resetVelocity() {
         velocityX = defaultSpeed;
         velocityY = 0;
