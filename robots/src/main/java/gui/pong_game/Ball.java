@@ -8,11 +8,13 @@ public class Ball implements Collidable {
     private final int diam;
     private int velocityX = 2;
     private int velocityY = 0;
+    private final Random random;
 
     public Ball(int positionX, int positionY, int diam) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.diam = diam;
+        random = new Random();
     }
 
     public void setPosition(int positionX, int positionY) {
@@ -49,7 +51,6 @@ public class Ball implements Collidable {
 
             double normalizedOffset = offset / (platform.getBounds().height / 2.0);
 
-            Random random = new Random();
             velocityY = (int)(normalizedOffset * 5 * (1.0f + random.nextFloat()));
 
             if (velocityY == 0) {
