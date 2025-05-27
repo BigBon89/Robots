@@ -109,13 +109,16 @@ public class PongGame extends JPanel {
                 platform2.move(platformPlayerSpeed);
             }
         } else {
-            int ballCenterY = ball.getBounds().y + ball.getBounds().width / 2;
-            int platform2CenterY = platform2.getBounds().y + platform2.getBounds().height / 2;
+            CircleBound ballBound = (CircleBound)ball.getBounds();
+            RectBound platform2Bound = (RectBound)platform2.getBounds();
+            Rectangle platform2Rect = platform2Bound.getRect();
+
+            int platform2CenterY = platform2Rect.y + platform2Rect.height / 2;
 
             int deadZoneOffset = 5;
-            if (platform2CenterY < ballCenterY - deadZoneOffset) {
+            if (platform2CenterY < ballBound.getCenterY() - deadZoneOffset) {
                 platform2.move(gameMode.getAiPlatformSpeed());
-            } else if (platform2CenterY > ballCenterY + deadZoneOffset) {
+            } else if (platform2CenterY > ballBound.getCenterY() + deadZoneOffset) {
                 platform2.move(-gameMode.getAiPlatformSpeed());
             }
         }
