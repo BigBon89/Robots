@@ -32,8 +32,8 @@ public class Ball implements Collidable {
     }
 
     @Override
-    public Rectangle getBounds() {
-        return new Rectangle(positionX - diam / 2, positionY - diam / 2, diam, diam);
+    public Bound getBounds() {
+        return new CircleBound(positionX, positionY, diam / 2);
     }
 
     Collidable move() {
@@ -49,11 +49,15 @@ public class Ball implements Collidable {
         positionX -= velocityX;
         positionY -= velocityY;
         if (collisionObject instanceof Platform platform) {
-            int platformCenterY = platform.getBounds().y + platform.getBounds().height / 2;
-            int ballCenterY = this.getBounds().y + this.getBounds().height / 2;
-            int offset = ballCenterY - platformCenterY;
+            RectBound platformBound = (RectBound)platform.getBounds();
+            Rectangle platformRect = platformBound.getRect();
 
-            double normalizedOffset = offset / (platform.getBounds().height / 2.0);
+            CircleBound ballBound = (CircleBound)this.getBounds();
+
+            int platformCenterY = platformRect.y + platformRect.height / 2;
+            int offset = ballBound.getCenterY() - platformCenterY;
+
+            double normalizedOffset = offset / (platformRect.height / 2.0);
 
             velocityY = (int)(normalizedOffset * 5 * (1.0f + random.nextFloat()));
 

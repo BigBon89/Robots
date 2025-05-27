@@ -23,10 +23,19 @@ public class CollisionSystem {
     }
 
     public Collidable getCollisionObject(Collidable source, Class<?>... ignoreClasses) {
-        Rectangle bounds = source.getBounds();
+        Bound bounds = source.getBounds();
 
-        if (bounds.y < 0 || bounds.y + bounds.height > screenHeight) {
-            return () -> new Rectangle(0, 0, 0, 0);
+        if (bounds instanceof RectBound rect) {
+            Rectangle r = rect.getRect();
+            if (r.y < 0 || r.y + r.height > screenHeight) {
+                return () -> new RectBound(new Rectangle(0, 0, 0, 0));
+            }
+        } else if (bounds instanceof CircleBound circle) {
+            int top = circle.getCenterY() - circle.getRadius();
+            int bottom = circle.getCenterY() + circle.getRadius();
+            if (top < 0 || bottom > screenHeight) {
+                return () -> new RectBound(new Rectangle(0, 0, 0, 0));
+            }
         }
 
         outer:

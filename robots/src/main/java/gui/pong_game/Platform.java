@@ -14,8 +14,8 @@ public class Platform implements Collidable {
     }
 
     @Override
-    public Rectangle getBounds() {
-        return new Rectangle(positionX - width / 2, positionY - height / 2, width, height);
+    public Bound getBounds() {
+        return new RectBound(new Rectangle(positionX - width / 2, positionY - height / 2, width, height));
     }
 
     public void setPositionX(int positionX) {

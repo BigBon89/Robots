@@ -14,8 +14,8 @@ public class GameOverZone implements Collidable {
     }
 
     @Override
-    public Rectangle getBounds() {
-        return new Rectangle(positionX, positionY, width, height);
+    public Bound getBounds() {
+        return new RectBound(new Rectangle(positionX, positionY, width, height));
     }
 
     public void draw(Graphics2D g) {
