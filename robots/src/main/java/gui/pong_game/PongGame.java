@@ -44,18 +44,6 @@ public class PongGame extends JPanel {
                 onRedrawEvent();
             }
         }, 0, 15);
-        //TODO: проверить и убрать коммент
-//        addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                keysPressed.add(e.getKeyCode());
-//            }
-//
-//            @Override
-//            public void keyReleased(KeyEvent e) {
-//                keysPressed.remove(e.getKeyCode());
-//            }
-//        });
         KeyboardFocusManager keyboardFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         keyboardFocusManager.addKeyEventDispatcher(e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
