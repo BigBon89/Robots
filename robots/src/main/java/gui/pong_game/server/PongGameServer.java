@@ -5,14 +5,13 @@ import gui.pong_game.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.ArrayList;
 
 public class PongGameServer {
     private final int port = 9001;
@@ -36,24 +35,21 @@ public class PongGameServer {
     private final int width = 800;
     private final int height = 600;
     private GameState gameState;
-    private Command command;
+    private ArrayList<ClientHandler> clients;
 
     public static void main(String[] args) throws IOException {
         new PongGameServer().start();
     }
 
     public void start() throws IOException {
+        clients = new ArrayList<>();
         ServerSocket serverSocket = new ServerSocket(port);
-        Socket client = serverSocket.accept();
-        ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
         gameState = new GameState();
-        command = new Command();
-        gameMode = GameMode.PLAYER_VS_AI_DIFFICULT_2;
+        gameMode = GameMode.PLAYER_VS_PLAYER;
         collisionSystem = CollisionSystem.getInstance();
-        gameOverZone1 = new GameOverZone();
-        gameOverZone2 = new GameOverZone();
+        gameOverZone1 = new GameOverZone(0, 0, platformPositionX, height);
+        gameOverZone2 = new GameOverZone(width - platformPositionX, 0, platformPositionX, height);
         init = false;
 
         Timer timer = new Timer();
@@ -61,11 +57,27 @@ public class PongGameServer {
             @Override
             public void run() {
                 try {
-                    command = (Command)in.readObject();
+                    while (clients.size() < 2) {
+                        Socket socket = serverSocket.accept();
+                        ClientHandler client = new ClientHandler(socket);
+                        clients.add(client);
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
+
+                ArrayList<ClientHandler> clientsToRemove = new ArrayList<>();
+                for (ClientHandler client : clients) {
+                    if (!client.readCommand()) {
+                        clientsToRemove.add(client);
+                    }
+                }
+                if (clients.removeAll(clientsToRemove)) {
+                    return;
+                }
+
                 handle();
+
                 gameState.ballX = ball.positionX;
                 gameState.ballY = ball.positionY;
                 gameState.diam = ball.diam;
@@ -75,12 +87,10 @@ public class PongGameServer {
                 gameState.platform2X = platform2.positionX;
                 gameState.score1 = points1;
                 gameState.score2 = points2;
-                try {
-                    out.reset();
-                    out.writeObject(gameState);
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
+
+                clients.get(0).sendGameState(gameState);
+                clients.get(1).sendGameState(gameState);
+
             }
         }, 0, 15);
     }
@@ -98,15 +108,20 @@ public class PongGameServer {
             collisionSystem.add(gameOverZone2);
             init = true;
         }
-        gameOverZone1.resize(0, 0, platformPositionX, height);
-        gameOverZone2.resize(width - platformPositionX, 0, platformPositionX, height);
+
         platform2.setPositionX(width - platformPositionX);
 
-        if (command.upPressed) {
+        if (clients.get(0).command.upPressed) {
             platform1.move(-platformPlayerSpeed);
         }
-        if (command.downPressed) {
+        if (clients.get(0).command.downPressed) {
             platform1.move(platformPlayerSpeed);
+        }
+        if (clients.get(1).command.upPressed) {
+            platform2.move(-platformPlayerSpeed);
+        }
+        if (clients.get(1).command.downPressed) {
+            platform2.move(platformPlayerSpeed);
         }
         if (gameMode == GameMode.HOT_SEAT) {
             if (keysPressed.contains(KeyEvent.VK_UP)) {

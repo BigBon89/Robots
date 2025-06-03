@@ -2,7 +2,6 @@ package gui;
 
 import gui.pong_game.GameMode;
 import gui.pong_game.Menu;
-import gui.pong_game.PongGame;
 import gui.pong_game.client.PongGameClient;
 import log.Logger;
 

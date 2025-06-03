@@ -22,6 +22,8 @@ public class PongGameClient extends JPanel {
     private Ball ball = new Ball(0, 0,0, 0);
     private Platform platform1 = new Platform(0, 0,20, 50);
     private Platform platform2 = new Platform(0, 0,20, 50);
+    private int points1 = 0, points2 = 0;
+    private final int textScoresPositionY = 18;
 
     public PongGameClient() throws IOException {
         Socket socket = new Socket("localhost", 9001);
@@ -45,6 +47,8 @@ public class PongGameClient extends JPanel {
                     platform2.positionY = state.platform2Y;
                     platform1.positionX = state.platform1X;
                     platform2.positionX = state.platform2X;
+                    points1 = state.score1;
+                    points2 = state.score2;
                     repaint();
                 } catch (Exception e) {
                     Logger.debug(e.getMessage());
@@ -75,12 +79,19 @@ public class PongGameClient extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
+    private void drawTextScores(Graphics2D g) {
+        g.setColor(Color.WHITE);
+        g.drawString("Scores Player1: " + Integer.toString(points1), getWidth() / 2, textScoresPositionY);
+        g.drawString("Scores Player2: " + Integer.toString(points2), getWidth() / 2, textScoresPositionY * 2);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
 
         drawBackground(g2d);
+        drawTextScores(g2d);
 
         ball.draw(g2d);
         platform1.draw(g2d);
