@@ -6,7 +6,7 @@ public class GameOverZone implements Collidable {
     public int positionX, positionY;
     public int width, height;
 
-    public void resize(int positionX, int positionY, int width, int height) {
+    public GameOverZone(int positionX, int positionY, int width, int height) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;

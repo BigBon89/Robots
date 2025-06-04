@@ -4,8 +4,8 @@ import java.util.Random;
 import java.awt.*;
 
 public class Ball implements Collidable {
-    private int positionX, positionY;
-    private final int diam;
+    public int positionX, positionY;
+    public int diam;
     private int velocityX;
     private int velocityY;
     private int defaultSpeed;
@@ -36,7 +36,7 @@ public class Ball implements Collidable {
         return new CircleBound(positionX, positionY, diam / 2);
     }
 
-    Collidable move() {
+    public Collidable move() {
         CollisionSystem collisionSystem = CollisionSystem.getInstance();
 
         positionX += velocityX;
@@ -72,7 +72,7 @@ public class Ball implements Collidable {
         return collisionObject;
     }
 
-    void draw(Graphics2D g) {
+    public void draw(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.fillOval(positionX - diam / 2, positionY - diam / 2, diam, diam);
     }
